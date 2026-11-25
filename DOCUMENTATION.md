@@ -284,6 +284,5 @@ db.createCollection("loans", {
 ## 6. Verified Test Execution Output & Screenshot
 
 - **Screenshot Image File:** [mongo_test_screenshot.png](file:///c:/Users/jainp/OneDrive/Desktop/Daily-Tasks/mongo_test_screenshot.png)
-- **Raw Test Log:** [test_output.txt](file:///c:/Users/jainp/OneDrive/Desktop/Daily-Tasks/test_output.txt)
 - **Execution Script:** [mongo_library_system.py](file:///c:/Users/jainp/OneDrive/Desktop/Daily-Tasks/mongo_library_system.py)
 

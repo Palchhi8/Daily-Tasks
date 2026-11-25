@@ -3,20 +3,34 @@ MongoDB Schema, Validation, Indexes & Execution Plan Analysis
 Domain: Library Lending System (Book Availability, Holds, and Overdue Reminders)
 """
 
+import os
 import sys
 import json
 from datetime import datetime, timedelta, timezone
 from pymongo import MongoClient, errors
 from bson import ObjectId
 
+# Load .env if present
+env_path = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(env_path):
+    with open(env_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
 # ---------------------------------------------------------
-# 1. MongoDB Connection Setup
+# 1. MongoDB Connection Setup (MongoDB Atlas Cloud Cluster)
 # ---------------------------------------------------------
-MONGO_URI = "mongodb://localhost:27017"
-DB_NAME = "library_lending_db"
+MONGO_URI = os.getenv(
+    "MONGO_URI",
+    "mongodb+srv://jainpalchhi2k6_db_user:TeCS9Z2UAj3GKlQg@cluster0.kwbl0mw.mongodb.net/?retryWrites=true&w=majority"
+)
+DB_NAME = os.getenv("DB_NAME", "library_lending_db")
 
 def get_db():
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=10000)
     return client[DB_NAME], client
 
 # ---------------------------------------------------------
