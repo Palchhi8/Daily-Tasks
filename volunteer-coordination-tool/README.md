@@ -1,6 +1,8 @@
 # Volunteer Coordination API: Middleware, Validation & Error Handling
 
-An Express.js REST API prototype built for a **Volunteer Coordination Tool** managing **shift signups** and **volunteer attendance tracking**.
+An Express.js REST API built for a **Volunteer Coordination Tool** managing **shift signups** and **volunteer attendance tracking**.
+
+**Database:** Live MongoDB Atlas Cloud Cluster (`cluster0.kwbl0mw.mongodb.net` / Database: `volunteer_coordination_db`) via Mongoose.
 
 ---
 
@@ -15,14 +17,21 @@ An Express.js REST API prototype built for a **Volunteer Coordination Tool** man
 # Navigate to the project directory
 cd volunteer-coordination-tool
 
-# Install dependencies (Express & Zod)
+# Install dependencies (Express, Mongoose, Zod, Dotenv)
 npm install
 
-# Start the API server on port 3000
+# Start the API server on port 3000 (connects to MongoDB Atlas)
 npm start
 
-# Run the automated demonstration test suite (tests 10 valid & invalid cases)
+# Run the automated demonstration test suite against MongoDB Atlas
 npm test
+```
+
+### Environment Configuration (`.env`)
+The service connects to your MongoDB Atlas cluster using `.env`:
+```env
+PORT=3000
+MONGO_URI=mongodb+srv://jainpalchhi2k6_db_user:TeCS9Z2UAj3GKlQg@cluster0.kwbl0mw.mongodb.net/volunteer_coordination_db?retryWrites=true&w=majority
 ```
 
 ---

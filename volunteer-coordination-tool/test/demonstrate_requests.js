@@ -1,11 +1,14 @@
 /**
  * Demonstration Script: Valid and Invalid Express Requests
  * Tests all middleware (Request ID, Logging, Validation, Centralized Error Handling)
- * and Volunteer Coordination domain logic.
+ * and Volunteer Coordination domain logic connected to MongoDB Atlas.
  */
 
-const http = require('http');
+require('dotenv').config();
+const mongoose = require('mongoose');
 const app = require('../src/app');
+const connectDB = require('../src/config/db');
+const { resetSeedData } = require('../src/controllers/shiftController');
 
 const PORT = 3055;
 let server;
@@ -41,6 +44,11 @@ async function runRequest(name, method, path, body = null, customHeaders = {}) {
 }
 
 async function main() {
+  console.log('Connecting to MongoDB Atlas (volunteer_coordination_db)...');
+  await connectDB();
+  console.log('Resetting test seed data in MongoDB Atlas...');
+  await resetSeedData();
+
   server = app.listen(PORT, () => {
     console.log(`Test server running on port ${PORT}`);
   });
@@ -50,7 +58,7 @@ async function main() {
     // 1. VALID: Query Existing Shift Details
     // -------------------------------------------------------------
     await runRequest(
-      '1. [VALID] Query Shift Details and Remaining Capacity',
+      '1. [VALID] Query Shift Details and Remaining Capacity (from Atlas)',
       'GET',
       '/api/shifts/shift_food_drive_101'
     );
@@ -71,7 +79,7 @@ async function main() {
       notes: 'Available for entire 4-hour morning shift.'
     };
     await runRequest(
-      '2. [VALID] Volunteer Shift Signup with Full Valid Payload',
+      '2. [VALID] Volunteer Shift Signup with Full Valid Payload (Saved to Atlas)',
       'POST',
       '/api/shifts/shift_food_drive_101/signup',
       validSignup
@@ -109,7 +117,7 @@ async function main() {
     // 5. INVALID: Non-Existent Shift (Not Found 404)
     // -------------------------------------------------------------
     await runRequest(
-      '5. [INVALID] Non-Existent Shift ID (Operational 404 Not Found)',
+      '5. [INVALID] Non-Existent Shift ID (Operational 404 Not Found from Atlas)',
       'POST',
       '/api/shifts/shift_unknown_999/signup',
       validSignup
@@ -156,7 +164,7 @@ async function main() {
       coordinatorNotes: 'Arrived promptly at 09:00, excellent coordination.'
     };
     await runRequest(
-      '8. [VALID] Record Volunteer Attendance & Check-In',
+      '8. [VALID] Record Volunteer Attendance & Check-In (Updated in Atlas)',
       'PATCH',
       '/api/shifts/shift_food_drive_101/attendance',
       validAttendance
@@ -187,15 +195,17 @@ async function main() {
     );
 
     console.log('\n' + '='.repeat(70));
-    console.log('ALL DEMONSTRATION TESTS COMPLETED SUCCESSFULLY!');
+    console.log('ALL DEMONSTRATION TESTS COMPLETED SUCCESSFULLY AGAINST MONGODB ATLAS!');
     console.log('='.repeat(70) + '\n');
   } finally {
-    server.close();
+    if (server) server.close();
+    await mongoose.connection.close();
   }
 }
 
 main().catch((err) => {
   console.error('Test execution failed:', err);
   if (server) server.close();
+  mongoose.connection.close();
   process.exit(1);
 });
