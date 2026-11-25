@@ -20,9 +20,6 @@ if os.path.exists(env_path):
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
 
-# ---------------------------------------------------------
-# 1. MongoDB Connection Setup (MongoDB Atlas Cloud Cluster)
-# ---------------------------------------------------------
 MONGO_URI = os.getenv(
     "MONGO_URI",
     "mongodb+srv://jainpalchhi2k6_db_user:TeCS9Z2UAj3GKlQg@cluster0.kwbl0mw.mongodb.net/?retryWrites=true&w=majority"
@@ -33,12 +30,6 @@ def get_db():
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=10000)
     return client[DB_NAME], client
 
-# ---------------------------------------------------------
-# 2. JSON Schema Validators for Both Entities
-# ---------------------------------------------------------
-
-# Entity 1: books
-# Represents book titles, catalog details, inventory counts, and an embedded bounded holds queue.
 BOOKS_SCHEMA = {
     "$jsonSchema": {
         "bsonType": "object",
